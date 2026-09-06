@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Order Confirmed — {{ store.store_name }}{% endblock %}
+{% block content %}
+<section class="success-page">
+<div class="success-icon"><i class="fa-solid fa-check"></i></div>
+<span class="eyebrow">ORDER CONFIRMED</span>
+<h1>Thank you for your order!</h1>
+<p>Your order <strong>#{{ order.id }}</strong> has been received successfully and is currently <strong>{{ order.status }}</strong>.</p>
+<div class="confirmation-card"><h3>Order total</h3><strong>{{ store.currency }}{{ '{:,.0f}'.format(order.total) }}</strong><small><i class="fa-solid fa-location-dot"></i> Delivery to: {{ order.address }}</small></div>
+<div class="confirm-actions"><a class="btn primary" href="{{ url_for('order_details', order_id=order.id) }}"><i class="fa-solid fa-receipt"></i> View order details</a>{% if store.show_whatsapp=='1' and order_whatsapp_url %}<a class="btn whatsapp" href="{{ order_whatsapp_url }}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Send to WhatsApp</a>{% endif %}<a class="btn ghost" href="{{ url_for('shop') }}"><i class="fa-solid fa-bag-shopping"></i> Continue shopping</a></div>
+</section>
+{% endblock %}

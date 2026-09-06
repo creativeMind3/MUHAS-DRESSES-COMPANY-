@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="admin-app">
+  <aside class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar-head">
+      <a class="admin-brand" href="{{ url_for('admin_dashboard') }}">
+        {% if store.logo %}<img src="{{ url_for('uploaded_file', filename=store.logo) }}" alt="">{% else %}<span class="admin-brand-mark">{{ (store.store_name|trim)[:1]|upper or 'S' }}</span>{% endif %}
+        <span><strong>{{ store.store_name }}</strong><small>STORE MANAGER</small></span>
+      </a>
+      <button class="admin-close" type="button" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="admin-nav-group"><span class="admin-nav-label">Workspace</span>
+      <a class="admin-link {% if request.endpoint=='admin_dashboard' %}active{% endif %}" href="{{ url_for('admin_dashboard') }}"><span class="nav-icon"><i class="fa-solid fa-gauge-high"></i></span>Dashboard</a>
+      <a class="admin-link {% if request.endpoint in ['admin_products','add_product','edit_product','delete_product'] %}active{% endif %}" href="{{ url_for('admin_products') }}"><span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span>Products</a>
+      <a class="admin-link {% if request.endpoint in ['admin_orders','admin_order_details'] %}active{% endif %}" href="{{ url_for('admin_orders') }}"><span class="nav-icon"><i class="fa-solid fa-receipt"></i></span>Orders{% if stats is defined and stats.pending %}<b class="nav-badge">{{ stats.pending }}</b>{% endif %}</a>
+      <a class="admin-link {% if request.endpoint=='admin_customers' %}active{% endif %}" href="{{ url_for('admin_customers') }}"><span class="nav-icon"><i class="fa-solid fa-users"></i></span>Customers</a>
+      <a class="admin-link {% if request.endpoint=='admin_customer_access' %}active{% endif %}" href="{{ url_for('admin_customer_access') }}"><span class="nav-icon"><i class="fa-solid fa-user-switch"></i></span>Customer access</a>
+    </div>
+    <div class="admin-nav-group"><span class="admin-nav-label">Store</span>
+      <a class="admin-link {% if request.endpoint=='admin_settings' %}active{% endif %}" href="{{ url_for('admin_settings') }}"><span class="nav-icon"><i class="fa-solid fa-sliders"></i></span>Store settings</a>
+      <a class="admin-link" href="{{ url_for('admin_settings') }}#navigation"><span class="nav-icon"><i class="fa-solid fa-bars"></i></span>Navigation</a>
+      <a class="admin-link" href="{{ url_for('admin_settings') }}#whatsapp"><span class="nav-icon"><i class="fa-brands fa-whatsapp"></i></span>WhatsApp</a>
+    </div>
+    <div class="admin-nav-group admin-nav-bottom"><span class="admin-nav-label">Account</span>
+      <a class="admin-link {% if request.endpoint=='admin_profile' %}active{% endif %}" href="{{ url_for('admin_profile') }}"><span class="nav-icon"><i class="fa-solid fa-user-shield"></i></span>My profile</a>
+      <a class="admin-link" href="{{ url_for('index') }}"><span class="nav-icon"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>View storefront</a>
+      <a class="admin-link danger-admin" href="{{ url_for('logout') }}"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span>Sign out</a>
+    </div>
+  </aside>
+  <div class="admin-overlay" id="adminOverlay"></div><div class="admin-main">
+    <header class="admin-topbar"><button class="admin-mobile-toggle" type="button" aria-label="Open admin menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="admin-top-left"><div class="admin-breadcrumb"><span>BIB-STORE</span><b>/</b><strong>{% block admin_page %}Dashboard{% endblock %}</strong></div></div>
+      <div class="admin-top-actions">
+        <a class="store-preview" href="{{ url_for('index') }}" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> <span>Preview store</span></a>
+        <div class="admin-user-chip"><span class="admin-avatar">{{ g.user['name'][0]|upper }}</span><span class="admin-user-text"><strong>{{ g.user['name'] }}</strong><small>Administrator</small></span></div>
+      </div>
+    </header>
+    <main class="admin-content">
+      <div class="admin-page-heading">
+        <div><span class="eyebrow">{% block admin_eyebrow %}CONTROL CENTER{% endblock %}</span><h1>{% block admin_heading %}Dashboard{% endblock %}</h1><p>{% block admin_subtitle %}Manage your store from one place.{% endblock %}</p></div>
+        {% block admin_heading_action %}{% endblock %}
+      </div>
+      {% block admin_content %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% endblock %}

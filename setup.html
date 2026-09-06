@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Admin setup · {{ store.store_name }}{% endblock %}
+{% block content %}
+<section class="auth-page auth-modern setup-modern">
+  <div class="auth-modern-shell">
+    <div class="auth-showcase setup-showcase">
+      <div class="showcase-orb orb-a"></div><div class="showcase-orb orb-b"></div>
+      <a class="showcase-brand" href="{{ url_for('index') }}">{% if store.logo %}<img class="showcase-logo-image" src="{{ url_for('uploaded_file', filename=store.logo) }}" alt="{{ store.store_name }} logo">{% else %}<span class="showcase-logo">{{ (store.store_name|trim)[:1]|upper or 'S' }}</span>{% endif %}<span>{{ store.store_name }}</span></a>
+      <div class="showcase-content">
+        <span class="showcase-kicker"><i class="fa-solid fa-shield-halved"></i> STORE OWNER PORTAL</span>
+        <h2>Build your store.<br><span>Control everything.</span></h2>
+        <p>Create the first administrator account and manage your products, orders, customers and store settings directly from the website.</p>
+        <div class="showcase-features">
+          <div><i class="fa-solid fa-gauge-high"></i><span><b>Admin dashboard</b><small>See the important parts of your store at a glance.</small></span></div>
+          <div><i class="fa-solid fa-boxes-stacked"></i><span><b>Store management</b><small>Control products, orders and customer records.</small></span></div>
+          <div><i class="fa-solid fa-lock"></i><span><b>Protected access</b><small>Only your administrator account can enter the dashboard.</small></span></div>
+        </div>
+      </div>
+      <div class="showcase-bottom"><span>Secure</span><span>•</span><span>Responsive</span><span>•</span><span>Easy to manage</span></div>
+    </div>
+    <div class="auth-modern-card">
+      <div class="auth-card-top"><span class="auth-mini-icon"><i class="fa-solid fa-shield-halved"></i></span><a href="{{ url_for('index') }}"><i class="fa-solid fa-arrow-left"></i> Store</a></div>
+      {% if completed %}
+        <span class="eyebrow">SETUP COMPLETE</span><h1>Your store is ready.</h1><p class="auth-lead">The administrator account already exists. Initial setup is now locked.</p>
+        <div class="setup-complete"><div><i class="fa-solid fa-circle-check"></i><span><b>Administrator created</b><small>Your dashboard is ready to use.</small></span></div><div><i class="fa-solid fa-lock"></i><span><b>Setup protected</b><small>A second administrator cannot be created here.</small></span></div></div>
+        <a class="btn primary auth-submit modern-submit" href="{{ url_for('admin_login') }}"><i class="fa-solid fa-gauge-high"></i> Open admin dashboard</a>
+        <a class="btn auth-secondary modern-outline" href="{{ url_for('index') }}"><i class="fa-solid fa-store"></i> View storefront</a>
+      {% else %}
+        <span class="eyebrow">FIRST-TIME SETUP</span><h1>Create your store admin</h1><p class="auth-lead">Set up the owner account that will control your BIB-STORE website.</p>
+        <div class="setup-progress"><span class="progress-dot active">1</span><i></i><span class="progress-dot">2</span><i></i><span class="progress-dot">3</span><small>Secure setup · Store control · Ready to launch</small></div>
+        <form method="post" class="auth-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="setup-section-label"><i class="fa-solid fa-store"></i><span><b>Store details</b><small>Set the customer-facing identity now. You can change these later in Store Settings.</small></span></div>
+          <label><span>Store name</span><div class="input-wrap modern-input"><i class="fa-solid fa-store"></i><input name="store_name" required maxlength="100" value="{{ store.store_name }}" placeholder="Your store name"></div></label>
+          <div class="setup-two-col"><label><span>Store email</span><div class="input-wrap modern-input"><i class="fa-regular fa-envelope"></i><input type="email" name="store_email" maxlength="160" placeholder="store@example.com"></div></label><label><span>WhatsApp</span><div class="input-wrap modern-input"><i class="fa-brands fa-whatsapp"></i><input name="whatsapp" maxlength="50" placeholder="2348012345678"></div></label></div>
+          <label><span>Phone</span><div class="input-wrap modern-input"><i class="fa-solid fa-phone"></i><input name="phone" maxlength="50" placeholder="+234..."></div></label>
+          <label><span>Store address</span><div class="input-wrap modern-input"><i class="fa-solid fa-location-dot"></i><input name="address" maxlength="250" placeholder="Business address"></div></label>
+          <label><span>Short store description</span><div class="input-wrap modern-input"><i class="fa-regular fa-note-sticky"></i><textarea name="description" rows="3" maxlength="500" placeholder="What does your store sell?"></textarea></div></label>
+          <div class="setup-section-label"><i class="fa-solid fa-shield-halved"></i><span><b>Administrator account</b><small>This account controls the entire store.</small></span></div>
+          <label><span>Administrator name</span><div class="input-wrap modern-input"><i class="fa-regular fa-user"></i><input name="name" required maxlength="100" placeholder="Store owner name"></div></label>
+          <label><span>Administrator email</span><div class="input-wrap modern-input"><i class="fa-regular fa-envelope"></i><input type="email" name="email" required autocomplete="email" placeholder="admin@example.com"></div></label>
+          <label><span>Password</span><div class="input-wrap modern-input"><i class="fa-solid fa-lock"></i><input id="setupPassword" type="password" name="password" required minlength="8" placeholder="Create a strong password"><button type="button" class="password-toggle" data-password-toggle="setupPassword" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div></label>
+          <label><span>Confirm password</span><div class="input-wrap modern-input"><i class="fa-solid fa-check-double"></i><input id="setupConfirm" type="password" name="confirm_password" required minlength="8" placeholder="Repeat your password"><button type="button" class="password-toggle" data-password-toggle="setupConfirm" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div></label>
+          <button class="btn primary auth-submit modern-submit" type="submit"><i class="fa-solid fa-shield-halved"></i> Create administrator</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

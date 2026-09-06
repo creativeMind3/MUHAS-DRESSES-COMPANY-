@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Order #{{ order.id }} — {{ store.store_name }}{% endblock %}
+{% block content %}
+<section class="section"><div class="container">
+<div class="section-head"><div><span class="eyebrow">MY ORDER</span><h1>Order #{{ order.id }}</h1><p>Placed {{ order.created_at }}</p></div><span class="status {{ order.status|lower }}">{{ order.status }}</span></div>
+<div class="checkout-layout">
+<div class="order-detail-card"><h2><i class="fa-solid fa-bag-shopping"></i> Order items</h2>{% for i in items %}<div class="order-item-modern"><div class="order-item-thumb"><span>{{ i['product_name'][0] }}</span></div><div class="order-item-info"><strong>{{ i['product_name'] }}</strong><small>{{ store.currency }}{{ '{:,.0f}'.format(i['price']) }} × {{ i['quantity'] }}</small></div><div class="order-item-price">{{ store.currency }}{{ '{:,.0f}'.format(i['price'] * i['quantity']) }}</div></div>{% endfor %}<div class="total"><span>Order total</span><strong>{{ store.currency }}{{ '{:,.0f}'.format(order.total) }}</strong></div></div>
+<aside class="summary"><div class="delivery-box"><h2><i class="fa-solid fa-truck-fast"></i> Delivery details</h2><div class="delivery-row"><i class="fa-solid fa-user"></i><div><strong>Customer</strong><span>{{ order.customer_name }}</span></div></div><div class="delivery-row"><i class="fa-solid fa-phone"></i><div><strong>Phone</strong><span>{{ order.phone }}</span></div></div><div class="delivery-row"><i class="fa-solid fa-location-dot"></i><div><strong>Address</strong><span>{{ order.address }}</span></div></div>{% if order.note %}<div class="delivery-row"><i class="fa-solid fa-note-sticky"></i><div><strong>Delivery note</strong><span>{{ order.note }}</span></div></div>{% endif %}</div>{% if store.show_whatsapp=='1' and order_whatsapp_url %}<div class="order-actions"><a class="btn whatsapp" href="{{ order_whatsapp_url }}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Send order to WhatsApp</a><a class="btn ghost" href="{{ url_for('orders') }}"><i class="fa-solid fa-arrow-left"></i> My orders</a></div>{% endif %}</aside>
+</div></div></section>
+{% endblock %}

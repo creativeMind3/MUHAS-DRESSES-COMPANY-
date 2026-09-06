@@ -1,0 +1,32 @@
+{% extends 'admin_base.html' %}
+{% block title %}Customer Access · {{ store.store_name }}{% endblock %}
+{% block admin_page %}Customer access{% endblock %}
+{% block admin_eyebrow %}CUSTOMER MODE{% endblock %}
+{% block admin_heading %}Login as customer{% endblock %}
+{% block admin_subtitle %}Safely preview the storefront from a customer's account and return to admin at any time.{% endblock %}
+{% block admin_heading_action %}<a class="btn primary" href="{{ url_for('admin_customers') }}"><i class="fa-solid fa-users"></i> Manage customers</a>{% endblock %}
+{% block admin_content %}
+<section class="customer-access-hero">
+  <div class="customer-access-icon"><i class="fa-solid fa-user-switch"></i></div>
+  <div><span class="eyebrow">SAFE PREVIEW</span><h2>Customer access center</h2><p>Choose a customer to open the normal storefront as them. Your administrator session is preserved and a <strong>Return to Admin</strong> control is shown while previewing.</p></div>
+  <div class="customer-access-stat"><strong>{{ customers|length }}</strong><span>registered customers</span></div>
+</section>
+<section class="customer-access-tools">
+  <div class="toolbar-search"><i class="fa-solid fa-magnifying-glass"></i><input type="search" data-table-search placeholder="Search name or email..." autocomplete="off"></div>
+</section>
+<section class="customer-access-grid">
+{% for c in customers %}
+<article class="customer-access-card" data-search-row>
+  <div class="customer-access-card-top"><span class="customer-avatar large">{{ c['name'][0]|upper }}</span><span class="customer-mode-pill"><i class="fa-solid fa-eye"></i> Preview</span></div>
+  <h3>{{ c['name'] }}</h3><p>{{ c['email'] }}</p>
+  <div class="customer-access-meta"><span><i class="fa-solid fa-bag-shopping"></i> {{ c['order_count'] }} orders</span><span><i class="fa-solid fa-calendar"></i> {{ c['created_at'] }}</span></div>
+  <form method="post" action="{{ url_for('admin_login_as_customer', user_id=c['id']) }}" onsubmit="return confirm('Open the storefront as {{ c['name']|e }}?')">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="btn primary wide customer-preview-btn" type="submit"><i class="fa-solid fa-user-check"></i> Login as {{ c['name'].split(' ')[0] }}</button>
+  </form>
+</article>
+{% else %}
+<div class="customer-access-empty"><div><i class="fa-solid fa-user-plus"></i></div><h3>No customer accounts yet</h3><p>Customers will appear here after they create an account.</p><a class="btn light" href="{{ url_for('admin_customers') }}"><i class="fa-solid fa-arrow-left"></i> Back to customers</a></div>
+{% endfor %}
+</section>
+{% endblock %}

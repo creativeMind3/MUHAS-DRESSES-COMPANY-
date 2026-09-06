@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Sign in · {{ store.store_name }}{% endblock %}
+{% block content %}
+<section class="auth-page auth-modern">
+  <div class="auth-modern-shell">
+    <div class="auth-showcase">
+      <div class="showcase-orb orb-a"></div><div class="showcase-orb orb-b"></div>
+      <a class="showcase-brand" href="{{ url_for('index') }}">{% if store.logo %}<img class="showcase-logo-image" src="{{ url_for('uploaded_file', filename=store.logo) }}" alt="{{ store.store_name }} logo">{% else %}<span class="showcase-logo">{{ (store.store_name|trim)[:1]|upper or 'S' }}</span>{% endif %}<span>{{ store.store_name }}</span></a>
+      <div class="showcase-content">
+        <span class="showcase-kicker"><i class="fa-solid fa-sparkles"></i> SHOP SMARTER</span>
+        <h2>Everything you need.<br><span>One beautiful store.</span></h2>
+        <p>Sign in to keep your orders, account and shopping experience together in one place.</p>
+        <div class="showcase-features">
+          <div><i class="fa-solid fa-box"></i><span><b>Track orders</b><small>Stay updated from checkout to delivery.</small></span></div>
+          <div><i class="fa-solid fa-bolt"></i><span><b>Faster checkout</b><small>Keep your details ready for your next order.</small></span></div>
+          <div><i class="fa-solid fa-shield-halved"></i><span><b>Secure account</b><small>Your password is securely hashed.</small></span></div>
+        </div>
+      </div>
+      <div class="showcase-bottom"><span>Simple shopping</span><span>•</span><span>Trusted service</span><span>•</span><span>Easy delivery</span></div>
+    </div>
+    <div class="auth-modern-card">
+      <div class="auth-card-top"><span class="auth-mini-icon"><i class="fa-solid fa-lock"></i></span><a href="{{ url_for('index') }}"><i class="fa-solid fa-arrow-left"></i> Store</a></div>
+      <span class="eyebrow">WELCOME BACK</span><h1>Sign in to your account</h1><p class="auth-lead">Enter your details to continue shopping.</p>
+      <form method="post" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="next" value="{{ next_url }}">
+        <label><span>Email address</span><div class="input-wrap modern-input"><i class="fa-regular fa-envelope"></i><input type="email" name="email" required autocomplete="email" placeholder="you@example.com"></div></label>
+        <label><span>Password</span><div class="input-wrap modern-input"><i class="fa-solid fa-lock"></i><input id="loginPassword" type="password" name="password" required autocomplete="current-password" placeholder="Enter your password"><button type="button" class="password-toggle" data-password-toggle="loginPassword" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div></label>
+        <button class="btn primary auth-submit modern-submit" type="submit"><i class="fa-solid fa-arrow-right-to-bracket"></i> Sign in</button>
+      </form>
+      <div class="auth-or"><span>New to {{ store.store_name }}?</span></div>
+      <a class="btn auth-secondary modern-outline" href="{{ url_for('register') }}"><i class="fa-solid fa-user-plus"></i> Create a free account</a>
+      <div class="auth-security"><i class="fa-solid fa-shield-halved"></i><span><b>Secure sign in</b><small>Your account credentials are protected.</small></span></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

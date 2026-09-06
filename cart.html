@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}Shopping Cart · {{ store.store_name }}{% endblock %}
+{% block content %}
+<section class="cart-page">
+  <div class="container">
+    <div class="cart-heading">
+      <div>
+        <span class="eyebrow"><i class="fa-solid fa-bag-shopping"></i> YOUR BAG</span>
+        <h1>Shopping cart</h1>
+        <p>Review your items, adjust quantities and continue when you're ready.</p>
+      </div>
+      {% if items %}
+      <form method="post" action="{{ url_for('clear_cart') }}" class="cart-clear-top">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn ghost" type="submit"><i class="fa-regular fa-trash-can"></i> Clear cart</button>
+      </form>
+      {% endif %}
+    </div>
+
+    {% if items %}
+    <div class="cart-grid-modern">
+      <div class="cart-products-panel">
+        <div class="cart-panel-head">
+          <div><h2>Your items</h2><span>{{ items|length }} item{% if items|length != 1 %}s{% endif %}</span></div>
+          <a href="{{ url_for('shop') }}" class="cart-text-link"><i class="fa-solid fa-arrow-left"></i> Continue shopping</a>
+        </div>
+
+        <div class="cart-items-modern">
+          {% for row in items %}
+          <article class="cart-product-card">
+            <div class="cart-modern-image">
+              {% if row.product['image'] %}
+                <img src="{{ url_for('uploaded_file', filename=row.product['image']) }}" alt="{{ row.product['name'] }}">
+              {% else %}
+                <div class="image-placeholder"><i class="fa-solid fa-box-open"></i></div>
+              {% endif %}
+            </div>
+            <div class="cart-modern-info">
+              <span class="cart-category"><i class="fa-solid fa-tag"></i> {{ row.product['category'] }}</span>
+              <h3>{{ row.product['name'] }}</h3>
+              <div class="cart-item-meta"><span><i class="fa-solid fa-box"></i> {% if row.product['stock'] > 0 %}Available{% else %}Out of stock{% endif %}</span><span><i class="fa-solid fa-hashtag"></i> #{{ row.product['id'] }}</span></div>
+              <div class="cart-unit-price">{{ store.currency }}{{ '{:,.0f}'.format(row.product['price']) }} <span>per item</span></div>
+            </div>
+            <form method="post" action="{{ url_for('update_cart', product_id=row.product['id']) }}" class="cart-quantity-form">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <span class="quantity-label">Quantity</span>
+              <div class="quantity-control">
+                <button type="button" class="quantity-btn" data-qty-minus aria-label="Decrease quantity"><i class="fa-solid fa-minus"></i></button>
+                <input type="number" name="quantity" min="1" max="{{ row.product['stock'] }}" value="{{ row.quantity }}" aria-label="Quantity">
+                <button type="button" class="quantity-btn" data-qty-plus aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button>
+              </div>
+              <button type="submit" class="btn small-update"><i class="fa-solid fa-rotate"></i> Update</button>
+            </form>
+            <div class="cart-line-total">
+              <span>Item total</span>
+              <strong>{{ store.currency }}{{ '{:,.0f}'.format(row.line_total) }}</strong>
+              <small>{{ row.quantity }} × {{ store.currency }}{{ '{:,.0f}'.format(row.product['price']) }}</small>
+            </div>
+            <form method="post" action="{{ url_for('remove_from_cart', product_id=row.product['id']) }}" class="cart-remove-form">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="cart-remove" type="submit" aria-label="Remove {{ row.product['name'] }}"><i class="fa-regular fa-trash-can"></i></button>
+            </form>
+          </article>
+          {% endfor %}
+        </div>
+      </div>
+
+      <aside class="cart-summary-modern">
+        <div class="summary-top">
+          <span class="summary-kicker"><i class="fa-solid fa-receipt"></i> ORDER SUMMARY</span>
+          <h2>Checkout total</h2>
+        </div>
+        <div class="summary-rows">
+          <div><span>Subtotal</span><strong>{{ store.currency }}{{ '{:,.0f}'.format(subtotal) }}</strong></div>
+          <div><span>Delivery</span><span class="summary-muted">Calculated by store</span></div>
+        </div>
+        <div class="summary-total">
+          <span>Total</span>
+          <strong>{{ store.currency }}{{ '{:,.0f}'.format(subtotal) }}</strong>
+        </div>
+        <a class="btn primary wide cart-checkout-btn" href="{{ url_for('checkout') }}"><i class="fa-solid fa-lock"></i> Proceed to checkout <i class="fa-solid fa-arrow-right"></i></a>
+        <a class="btn light wide" href="{{ url_for('shop') }}"><i class="fa-solid fa-arrow-left"></i> Continue shopping</a>
+        <div class="cart-secure-note"><i class="fa-solid fa-shield-halved"></i><div><strong>Secure ordering</strong><small>Your order details are handled securely.</small></div></div>
+      </aside>
+    </div>
+    {% else %}
+    <div class="empty-cart-modern">
+      <div class="empty-cart-icon"><i class="fa-solid fa-bag-shopping"></i></div>
+      <span class="eyebrow">YOUR BAG IS WAITING</span>
+      <h2>Your cart is empty</h2>
+      <p>Explore the store and add products you'd like to order.</p>
+      <div class="empty-cart-actions">
+        <a class="btn primary" href="{{ url_for('shop') }}"><i class="fa-solid fa-store"></i> Browse products</a>
+        <a class="btn light" href="{{ url_for('categories') }}"><i class="fa-solid fa-grid-2"></i> Explore categories</a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

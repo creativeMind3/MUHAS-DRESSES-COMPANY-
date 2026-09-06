@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} — {{ store.store_name }}{% endblock %}
+{% block content %}
+<section class="product-detail-page">
+  <div class="container">
+    <div class="product-detail-shell">
+      <div class="product-gallery-panel">
+        <div class="product-main-image">
+          {% if product.image %}<img src="{{ url_for('uploaded_file', filename=product.image) }}" alt="{{ product.name }}">{% else %}<div class="image-placeholder"><i class="fa-solid fa-box-open"></i><span>No image</span></div>{% endif %}
+          {% if product.stock <= 0 %}<span class="product-image-badge danger">Out of stock</span>{% elif product.stock <= 5 %}<span class="product-image-badge warning">Only {{ product.stock }} left</span>{% else %}<span class="product-image-badge success"><i class="fa-solid fa-check"></i> In stock</span>{% endif %}
+        </div>
+        <div class="product-trust-row">
+          <div><i class="fa-solid fa-shield-halved"></i><span><strong>Secure ordering</strong><small>Your order is handled safely.</small></span></div>
+          <div><i class="fa-solid fa-headset"></i><span><strong>Customer support</strong><small>We're here to help.</small></span></div>
+        </div>
+      </div>
+
+      <div class="product-info-panel">
+        <div class="product-breadcrumb"><a href="{{ url_for('shop') }}">Shop</a><i class="fa-solid fa-chevron-right"></i><span>{{ product.category }}</span></div>
+        <span class="eyebrow"><i class="fa-solid fa-tag"></i> {{ product.category }}</span>
+        <h1>{{ product.name }}</h1>
+        <div class="product-price-box"><span>Price</span><strong>{{ store.currency }}{{ '{:,.0f}'.format(product.price) }}</strong></div>
+
+        <div class="product-detail-section">
+          <div class="detail-section-heading"><span><i class="fa-regular fa-file-lines"></i></span><div><h2>Product details</h2><p>Everything you need to know before ordering.</p></div></div>
+          <div class="product-description">{{ product.description or 'No description provided yet. Please contact the store for more information about this product.' }}</div>
+        </div>
+
+        <div class="product-availability-card">
+          <div class="availability-icon"><i class="fa-solid fa-box"></i></div>
+          <div><span>Availability</span><strong>{% if product.stock <= 0 %}Currently unavailable{% elif product.stock <= 5 %}Limited stock · {{ product.stock }} remaining{% else %}In stock · {{ product.stock }} available{% endif %}</strong></div>
+        </div>
+
+        {% if product.stock > 0 %}
+        <form class="product-buy-panel" method="post" action="{{ url_for('add_to_cart', product_id=product.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="next" value="{{ url_for('cart') }}">
+          <label class="product-quantity-label">Quantity<div class="product-quantity-control"><button type="button" data-product-qty-minus aria-label="Decrease quantity"><i class="fa-solid fa-minus"></i></button><input id="productQuantity" type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" aria-label="Quantity"><button type="button" data-product-qty-plus aria-label="Increase quantity"><i class="fa-solid fa-plus"></i></button></div></label>
+          <button class="btn primary product-add-btn" type="submit"><i class="fa-solid fa-cart-plus"></i> Add to cart</button>
+          <a class="btn light product-buy-btn" href="{{ url_for('checkout') }}"><i class="fa-solid fa-bag-shopping"></i> Checkout</a>
+        </form>
+        {% else %}<div class="out-of-stock-note"><i class="fa-solid fa-circle-info"></i> This product is currently out of stock.</div>{% endif %}
+      </div>
+    </div>
+
+    <section class="product-information-grid">
+      <div class="detail-info-card"><div class="detail-card-icon"><i class="fa-solid fa-list-check"></i></div><div><h3>Product information</h3><dl><div><dt>Category</dt><dd>{{ product.category }}</dd></div><div><dt>Availability</dt><dd>{% if product.stock > 0 %}Available{% else %}Out of stock{% endif %}</dd></div></dl></div></div>
+      <div class="detail-info-card"><div class="detail-card-icon"><i class="fa-solid fa-truck-fast"></i></div><div><h3>Ordering & delivery</h3><p>Add this item to your cart and provide your details at checkout. Delivery arrangements are confirmed by the store.</p></div></div>
+      <div class="detail-info-card"><div class="detail-card-icon"><i class="fa-solid fa-comments"></i></div><div><h3>Need help?</h3><p>Have a question about this product? Contact the store before placing your order.</p></div></div>
+    </section>
+
+    <section class="related-products-section">
+      <div class="section-head"><div><span class="eyebrow">YOU MAY ALSO LIKE</span><h2>Related products</h2></div><a class="btn light" href="{{ url_for('shop') }}">View all <i class="fa-solid fa-arrow-right"></i></a></div>
+      <div class="product-grid">{% for p in related %}{% include '_product_card.html' %}{% else %}<div class="empty full">No related products yet.</div>{% endfor %}</div>
+    </section>
+  </div>
+</section>
+{% endblock %}

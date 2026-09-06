@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Checkout — {{ store.store_name }}{% endblock %}
+{% block content %}
+<section class="page-hero"><div class="container"><span class="eyebrow">SECURE CHECKOUT</span><h1>Complete your order</h1><p>Enter accurate delivery information and review your order before placing it.</p></div></section>
+<section class="section"><div class="container checkout-layout">
+<form class="form-card" method="post">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<h2>Delivery details</h2>
+<div class="secure-note"><i class="fa-solid fa-shield-halved"></i><span>Your delivery information is used only to process and coordinate this order.</span></div>
+<div class="form-row"><label>Customer name<input name="customer_name" required value="{{ g.user['name'] }}"></label><label>Phone number<input name="phone" required placeholder="080..." inputmode="tel"></label></div>
+<label>Delivery address<textarea name="address" required rows="4" placeholder="House number, street, area, city, state..."></textarea></label>
+<label>Additional note <span class="muted-text">(optional)</span><textarea name="note" rows="3" placeholder="Any delivery instruction..."></textarea></label>
+<button class="btn primary wide" type="submit"><i class="fa-solid fa-lock"></i> Place order securely</button>
+</form>
+<aside class="summary">
+<h2>Order summary</h2>
+<div class="summary-rows">
+{% for item,qty,line in items %}<div><span>{{ item['name'] }} × {{ qty }}</span><strong>{{ store.currency }}{{ '{:,.0f}'.format(line) }}</strong></div>{% endfor %}
+</div>
+<div class="summary-total"><span>Total to pay</span><strong>{{ store.currency }}{{ '{:,.0f}'.format(total) }}</strong></div>
+<p class="small-note"><i class="fa-solid fa-circle-check"></i> Stock is checked again before your order is saved.</p>
+{% if store.show_whatsapp=='1' and store.whatsapp %}<div class="whatsapp-hint"><i class="fa-brands fa-whatsapp"></i> After checkout, you can send your order details to our WhatsApp for delivery coordination.</div>{% endif %}
+</aside>
+</div></section>
+{% endblock %}

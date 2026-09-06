@@ -1,0 +1,36 @@
+{% extends 'admin_base.html' %}
+{% block title %}Administrators · {{ store.store_name }}{% endblock %}
+{% block admin_page %}Administrators{% endblock %}
+{% block admin_eyebrow %}ACCESS CONTROL{% endblock %}
+{% block admin_heading %}Administrator management{% endblock %}
+{% block admin_subtitle %}BIB-STORE is configured with one administrator account for this store.{% endblock %}
+{% block admin_heading_action %}<a class="btn light" href="{{ url_for('admin_profile') }}"><i class="fa-solid fa-user-shield"></i> My profile</a>{% endblock %}
+{% block admin_content %}
+<div class="admin-management-grid">
+  <section class="data-card admin-management-list">
+    <div class="management-head"><div><span class="eyebrow">TEAM</span><h2>Store administrator</h2><p>{{ admins|length }} administrator with dashboard access.</p></div><span class="management-count"><i class="fa-solid fa-shield-halved"></i>{{ admins|length }}</span></div>
+    <div class="admin-team-list">
+      {% for admin in admins %}
+      <article class="admin-team-card">
+        <div class="admin-team-avatar">{{ admin['name'][0]|upper }}</div>
+        <div class="admin-team-info"><strong>{{ admin['name'] }}</strong><span>{{ admin['email'] }}</span><small>Joined {{ admin['created_at'] }}{% if admin['id'] == g.user['id'] %} · You{% endif %}</small></div>
+        {% if admin['id'] == g.user['id'] %}<span class="team-role current"><i class="fa-solid fa-circle-check"></i> Current</span>
+        {% else %}<form method="post" action="{{ url_for('delete_admin', admin_id=admin['id']) }}" onsubmit="return confirm('Remove administrator {{ admin['name']|e }}? They will lose dashboard access.')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="icon-danger" type="submit" title="Remove administrator" aria-label="Remove {{ admin['name'] }}"><i class="fa-regular fa-trash-can"></i></button></form>{% endif %}
+      </article>
+      {% else %}<div class="empty-cell">No administrators found.</div>{% endfor %}
+    </div>
+  </section>
+  <section class="data-card admin-create-card">
+    <div class="management-head"><div><span class="eyebrow">NEW ADMIN</span><h2>Add administrator</h2><p>Create a separate login for another trusted store manager.</p></div><span class="management-icon"><i class="fa-solid fa-user-plus"></i></span></div>
+    <form method="post" class="admin-create-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Full name<div class="input-wrap modern-input"><i class="fa-regular fa-user"></i><input name="name" required maxlength="100" placeholder="Administrator name"></div></label>
+      <label>Email address<div class="input-wrap modern-input"><i class="fa-regular fa-envelope"></i><input type="email" name="email" required maxlength="160" placeholder="manager@example.com"></div></label>
+      <label>Password<div class="input-wrap modern-input"><i class="fa-solid fa-lock"></i><input id="newAdminPassword" type="password" name="password" required minlength="8" placeholder="At least 8 characters"><button type="button" class="password-toggle" data-password-toggle="newAdminPassword" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div></label>
+      <label>Confirm password<div class="input-wrap modern-input"><i class="fa-solid fa-check-double"></i><input id="newAdminConfirm" type="password" name="confirm_password" required minlength="8" placeholder="Repeat password"><button type="button" class="password-toggle" data-password-toggle="newAdminConfirm" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div></label>
+      <button class="btn primary wide" type="submit"><i class="fa-solid fa-user-plus"></i> Create administrator</button>
+    </form>
+    <div class="info-callout"><i class="fa-solid fa-lock"></i> Each administrator gets their own password. The current administrator cannot remove themselves.</div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Create account · {{ store.store_name }}{% endblock %}
+{% block content %}
+<section class="auth-page auth-modern">
+  <div class="auth-modern-shell">
+    <div class="auth-showcase register-showcase">
+      <div class="showcase-orb orb-a"></div><div class="showcase-orb orb-b"></div>
+      <a class="showcase-brand" href="{{ url_for('index') }}">{% if store.logo %}<img class="showcase-logo-image" src="{{ url_for('uploaded_file', filename=store.logo) }}" alt="{{ store.store_name }} logo">{% else %}<span class="showcase-logo">{{ (store.store_name|trim)[:1]|upper or 'S' }}</span>{% endif %}<span>{{ store.store_name }}</span></a>
+      <div class="showcase-content">
+        <span class="showcase-kicker"><i class="fa-solid fa-wand-magic-sparkles"></i> YOUR SHOPPING SPACE</span>
+        <h2>Create your account.<br><span>Make shopping easier.</span></h2>
+        <p>Join {{ store.store_name }} and keep your shopping activity organised from one simple account.</p>
+        <div class="showcase-features">
+          <div><i class="fa-solid fa-receipt"></i><span><b>Order history</b><small>Find your previous orders whenever you need them.</small></span></div>
+          <div><i class="fa-solid fa-cart-shopping"></i><span><b>Easy shopping</b><small>Move from product discovery to checkout faster.</small></span></div>
+          <div><i class="fa-solid fa-user-check"></i><span><b>Personal account</b><small>Keep your customer information in one place.</small></span></div>
+        </div>
+      </div>
+      <div class="showcase-bottom"><span>Free account</span><span>•</span><span>Simple checkout</span><span>•</span><span>Order tracking</span></div>
+    </div>
+    <div class="auth-modern-card">
+      <div class="auth-card-top"><span class="auth-mini-icon"><i class="fa-solid fa-user-plus"></i></span><a href="{{ url_for('index') }}"><i class="fa-solid fa-arrow-left"></i> Store</a></div>
+      <span class="eyebrow">GET STARTED</span><h1>Create your account</h1><p class="auth-lead">It only takes a moment. Your account makes future shopping easier.</p>
+      <form method="post" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label><span>Full name</span><div class="input-wrap modern-input"><i class="fa-regular fa-user"></i><input name="name" required maxlength="100" autocomplete="name" placeholder="Your full name"></div></label>
+        <label><span>Email address</span><div class="input-wrap modern-input"><i class="fa-regular fa-envelope"></i><input type="email" name="email" required autocomplete="email" placeholder="you@example.com"></div></label>
+        <label><span>Password</span><div class="input-wrap modern-input"><i class="fa-solid fa-lock"></i><input id="registerPassword" type="password" name="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"><button type="button" class="password-toggle" data-password-toggle="registerPassword" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div></label>
+        <label><span>Confirm password</span><div class="input-wrap modern-input"><i class="fa-solid fa-check-double"></i><input id="confirmPassword" type="password" name="confirm_password" required minlength="8" autocomplete="new-password" placeholder="Repeat your password"><button type="button" class="password-toggle" data-password-toggle="confirmPassword" aria-label="Show password"><i class="fa-regular fa-eye"></i></button></div></label>
+        <button class="btn primary auth-submit modern-submit" type="submit"><i class="fa-solid fa-rocket"></i> Create my account</button>
+      </form>
+      <p class="auth-foot">Already have an account? <a href="{{ url_for('login') }}">Sign in <i class="fa-solid fa-arrow-right"></i></a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}
